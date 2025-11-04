@@ -98,7 +98,6 @@ def convert_to_svg(args, notebook, palette):
 
 
 def convert_to_pdf(args, notebook, palette):
-    vectorize = args.pdf_type == "vector"
     use_link = not args.no_link
     use_keyword = args.add_keyword
     converter = PdfConverter(notebook, palette=palette)
@@ -112,12 +111,12 @@ def convert_to_pdf(args, notebook, palette):
 
     if args.all:
         data = converter.convert(
-            -1, vectorize, enable_link=use_link, enable_keyword=use_keyword
+            -1, enable_link=use_link, enable_keyword=use_keyword
         )  # minus value means converting all pages
         save(data, args.output)
     else:
         data = converter.convert(
-            args.number, vectorize, enable_link=use_link, enable_keyword=use_keyword
+            args.number, enable_link=use_link, enable_keyword=use_keyword
         )
         save(data, args.output)
 
@@ -260,7 +259,7 @@ def main():
     )
     parser_convert.add_argument(
         "--pdf-type",
-        choices=["original", "vector"],
+        choices=["original"],
         default="original",
         help="select PDF conversion type",
     )

@@ -24,7 +24,6 @@ from io import BytesIO
 
 from PIL import Image
 
-from svglib.svglib import svg2rlg
 from reportlab.lib.pagesizes import A4, portrait, landscape
 from reportlab.graphics import renderPDF
 from reportlab.pdfgen import canvas
@@ -396,7 +395,7 @@ class PdfConverter:
         self.pagesize = A4
 
     def convert(
-        self, page_number, vectorize=False, enable_link=False, enable_keyword=False
+        self, page_number, enable_link=False, enable_keyword=False
     ):
         """Returns PDF data of the given page.
 
@@ -404,8 +403,6 @@ class PdfConverter:
         ----------
         page_number : int
             page number to convert
-        vectorize : bool
-            convert handwriting to vector
         enable_link : bool
             enable page links and web links
         enable_keyword : bool
@@ -416,12 +413,8 @@ class PdfConverter:
         data : bytes
             bytes of PDF data
         """
-        if vectorize:
-            converter = SvgConverter(self.note, self.palette)
-            renderer_class = PdfConverter.SvgPageRenderer
-        else:
-            converter = ImageConverter(self.note, self.palette)
-            renderer_class = PdfConverter.ImgPageRenderer
+        converter = ImageConverter(self.note, self.palette)
+        renderer_class = PdfConverter.ImgPageRenderer
         imglist = self._create_image_list(converter, page_number)
         pdf_data = BytesIO()
         self._create_pdf(pdf_data, imglist, renderer_class, enable_link, enable_keyword)
@@ -507,24 +500,6 @@ class PdfConverter:
             right * scale_x,
             h - bottom * scale_y,
         )
-
-    class SvgPageRenderer:
-        def __init__(self, svg, pagesize):
-            self.svg = svg
-            self.pagesize = pagesize
-            self.drawing = svg2rlg(BytesIO(bytes(svg, "ascii")))
-            (w, h) = pagesize
-            (self.scale_x, self.scale_y) = (
-                w / self.drawing.width,
-                h / self.drawing.height,
-            )
-            self.drawing.scale(self.scale_x, self.scale_y)
-
-        def get_scale(self):
-            return (self.scale_x, self.scale_y)
-
-        def draw(self, cvs):
-            renderPDF.draw(self.drawing, cvs, 0, 0)
 
     class ImgPageRenderer:
         def __init__(self, img, pagesize):
