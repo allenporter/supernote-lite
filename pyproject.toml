@@ -9,10 +9,23 @@ license = "Apache-2.0"
 license-files = ["LICENSE"]
 description = "Unofficial python library for parsing Supernote notebooks"
 readme = "README.md"
-authors = [{ name = "Allen Porter", email = "allen.porter@gmail.com" }]
+authors = [
+  { name = "jya", email = "jya@wizmy.net" },
+  { name = "Allen Porter", email = "allen.porter@gmail.com" }
+]
 requires-python = ">=3.12"
 classifiers = []
-dependencies = []
+dependencies = [
+  "colour>=0.1.5",
+  "fusepy>=3.0.1",
+  "numpy>=1.19.0",
+  "Pillow>=7.2.0",
+  "potracer>=0.0.1",
+  "pypng>=0.0.20",
+  "reportlab>=3.6.1",
+  "svglib>=1.1.0",
+  "svgwrite>=1.4",
+]
 
 [project.urls]
 Source = "https://github.com/allenporter/supernote"
