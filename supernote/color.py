@@ -37,14 +37,14 @@ RGB_DARK_GRAY_COMPAT = 0x303030
 RGB_GRAY_COMPAT = 0x505050
 
 
-def get_rgb(value):
+def get_rgb(value: int) -> tuple[int, int, int]:
     r = (value & 0xFF0000) >> 16
     g = (value & 0x00FF00) >> 8
     b = value & 0x0000FF
     return (r, g, b)
 
 
-def web_string(value, mode=MODE_RGB):
+def web_string(value: int, mode: str = MODE_RGB) -> str:
     if mode == MODE_GRAYSCALE:
         return "#" + (format(value & 0xFF, "02x") * 3)
     else:
@@ -60,10 +60,10 @@ def web_string(value, mode=MODE_RGB):
 class ColorPalette:
     def __init__(
         self,
-        mode=MODE_GRAYSCALE,
-        colors=(BLACK, DARK_GRAY, GRAY, WHITE),
-        compat_colors=(DARK_GRAY_COMPAT, GRAY_COMPAT),
-    ):
+        mode: str = MODE_GRAYSCALE,
+        colors: tuple[int, int, int, int] = (BLACK, DARK_GRAY, GRAY, WHITE),
+        compat_colors: tuple[int, int] = (DARK_GRAY_COMPAT, GRAY_COMPAT),
+    ) -> None:
         if mode not in [MODE_GRAYSCALE, MODE_RGB]:
             raise ValueError("mode must be MODE_GRAYSCALE or MODE_RGB")
         if len(colors) != 4:
