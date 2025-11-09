@@ -11,13 +11,6 @@ repos:
     rev: 24.10.0
     hooks:
       - id: black
-  - repo: https://github.com/charliermarsh/ruff-pre-commit
-    rev: v0.14.3
-    hooks:
-      - id: ruff
-        args:
-          - --fix
-          - --exit-non-zero-on-fix
   - repo: local
     hooks:
       - id: mypy
