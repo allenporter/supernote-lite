@@ -258,8 +258,8 @@ def _get_bitmap_address(metadata, page_number):
     addresses = []
     layer_supported = metadata.is_layer_supported(page_number)
     if layer_supported:
-        for l in range(5):  # TODO: use constant
-            address = metadata.pages[page_number][fileformat.KEY_LAYERS][l].get(
+        for layer in range(5):  # TODO: use constant
+            address = metadata.pages[page_number][fileformat.KEY_LAYERS][layer].get(
                 "LAYERBITMAP"
             )
             addresses.append(0 if address is None else int(address))

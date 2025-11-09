@@ -15,7 +15,6 @@
 """Note manipulator classes."""
 
 import io
-import os
 import re
 
 from . import exceptions
