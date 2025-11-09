@@ -159,8 +159,8 @@ class Notebook:
         self.links: list[Link] = []
         has_links = metadata.footer.get(KEY_LINKS) is not None
         if has_links:
-            for l in metadata.footer.get(KEY_LINKS):
-                self.links.append(Link(l))
+            for link in metadata.footer.get(KEY_LINKS):
+                self.links.append(Link(link))
         self.pages: list[Page] = []
         total = metadata.get_total_pages()
         for i in range(total):
