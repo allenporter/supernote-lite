@@ -141,9 +141,9 @@ def load(
             content = _get_content_at_address(stream, addresses[0])
             note.get_page(p).set_content(content)
         else:
-            for _, addr in enumerate(addresses):
+            for layer, addr in enumerate(addresses):
                 content = _get_content_at_address(stream, addr)
-                note.get_page(p).get_layer(l).set_content(content)
+                note.get_page(p).get_layer(layer).set_content(content)
         # store path data to notebook object
         totalpath_address = _get_totalpath_address(metadata, p)
         if totalpath_address > 0:
