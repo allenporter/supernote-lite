@@ -196,7 +196,6 @@ def _pack_header(builder, notebook):
 
 
 def _pack_cover(builder, notebook):
-    metadata = notebook.get_metadata()
     cover_block = notebook.get_cover().get_content()
     if cover_block is not None:
         builder.append("COVER_2", cover_block)
