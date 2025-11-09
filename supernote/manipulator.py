@@ -405,7 +405,7 @@ def _verify_header_property(prop_name, metadata1, metadata2):
 def _construct_metadata_block(info):
     block_data = ""
     for k, v in info.items():
-        if type(v) == list:
+        if type(v) is list:
             for e in v:
                 block_data += f"<{k}:{e}>"
         else:
@@ -418,7 +418,7 @@ def _find_background_content_from_page(page):
     if not page.is_layer_supported():
         return None
     layers = page.get_layers()
-    for l in layers:
-        if l.get_name() == "BGLAYER":
-            return l.get_content()
+    for layer in layers:
+        if layer.get_name() == "BGLAYER":
+            return layer.get_content()
     return None
