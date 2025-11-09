@@ -34,14 +34,14 @@ class NotebookBuilder:
         return self.total_size
 
     def get_block_address(self, label):
-        if type(self.toc.get(label)) == list:
+        if type(self.toc.get(label)) is list:
             address = self.toc.get(label)[0]  # use first one
         else:
             address = self.toc.get(label)
         return address if address is not None else 0
 
     def get_duplicate_block_address_list(self, label):
-        if type(self.toc.get(label)) == list:
+        if type(self.toc.get(label)) is list:
             return self.toc.get(label)
         else:
             return [self.toc.get(label)]
@@ -62,7 +62,7 @@ class NotebookBuilder:
             )
         self.blocks.append(block)
         if label_duplicated:
-            if type(self.toc[label]) == list:
+            if type(self.toc[label]) is list:
                 self.toc[label].append(self.total_size)
             else:
                 self.toc[label] = [self.toc[label], self.total_size]
