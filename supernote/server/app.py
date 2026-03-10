@@ -308,7 +308,7 @@ def create_app(config: ServerConfig) -> web.Application:
             api_key=config.gemini_api_key,
             ocr_model=config.gemini_ocr_model,
             embedding_model=config.gemini_embedding_model,
-            chat_model=config.gemini_ocr_model,
+            chat_model=config.gemini_chat_model,
             max_concurrency=config.gemini_max_concurrency,
         )
     app["ai_service"] = ai_service
@@ -316,7 +316,7 @@ def create_app(config: ServerConfig) -> web.Application:
     summary_service = SummaryService(user_service, session_manager)
     app["summary_service"] = summary_service
 
-    search_service = SearchService(session_manager, ai_service, config)
+    search_service = SearchService(session_manager, ai_service)
     app["search_service"] = search_service
 
     app["sync_locks"] = {}  # user -> (equipment_no, expiry_time)

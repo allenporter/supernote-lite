@@ -3,7 +3,6 @@ from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 
-from supernote.server.config import ServerConfig
 from supernote.server.db.models.file import UserFileDO
 from supernote.server.db.models.note_processing import NotePageContentDO
 from supernote.server.db.session import DatabaseSessionManager
@@ -22,12 +21,10 @@ def mock_ai_service() -> MagicMock:
 def search_service(
     session_manager: DatabaseSessionManager,
     mock_ai_service: MagicMock,
-    server_config: ServerConfig,
 ) -> SearchService:
     return SearchService(
         session_manager=session_manager,
         ai_service=mock_ai_service,
-        config=server_config,
     )
 
 

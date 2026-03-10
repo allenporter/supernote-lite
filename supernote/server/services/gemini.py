@@ -103,7 +103,10 @@ class GeminiService(AIService):
         )
         if not response.embeddings:
             raise ValueError("No embeddings returned from Gemini API")
-        return list(response.embeddings[0].values or [])
+        values = response.embeddings[0].values
+        if not values:
+            raise ValueError("Empty embedding values returned from Gemini API")
+        return list(values)
 
     async def generate_json(self, prompt: str, schema: dict[str, Any]) -> str:
         response = await self.generate_content(

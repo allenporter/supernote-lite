@@ -46,6 +46,10 @@ class MistralService(AIService):
         return self._semaphore
 
     async def ocr_image(self, png_data: bytes, prompt: str) -> str:
+        # The dedicated OCR API does not accept a prompt — it extracts text
+        # directly from the document. The `prompt` parameter is part of the
+        # AIService interface for providers that support vision+instruction
+        # (e.g. Gemini), and is intentionally unused here.
         if self._client is None:
             raise ValueError("Mistral API key not configured")
 

@@ -7,7 +7,6 @@ from typing import List, Optional
 import numpy as np
 from sqlalchemy import select
 
-from supernote.server.config import ServerConfig
 from supernote.server.db.models.file import UserFileDO
 from supernote.server.db.models.note_processing import NotePageContentDO
 from supernote.server.db.session import DatabaseSessionManager
@@ -35,11 +34,9 @@ class SearchService:
         self,
         session_manager: DatabaseSessionManager,
         ai_service: AIService,
-        config: ServerConfig,
     ) -> None:
         self.session_manager = session_manager
         self.ai_service = ai_service
-        self.config = config
 
     async def search_chunks(
         self,

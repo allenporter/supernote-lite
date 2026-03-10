@@ -127,8 +127,14 @@ class ServerConfig(DataClassYAMLMixin):
 
     gemini_embedding_model: str = "gemini-embedding-001"
     """Gemini model to use for Embeddings.
-BaseConfig
+
     Env Var: `SUPERNOTE_GEMINI_EMBEDDING_MODEL`
+    """
+
+    gemini_chat_model: str = "gemini-2.0-flash"
+    """Gemini model to use for text generation (summaries).
+
+    Env Var: `SUPERNOTE_GEMINI_CHAT_MODEL`
     """
 
     gemini_max_concurrency: int = 5
@@ -319,6 +325,10 @@ BaseConfig
             logger.info(
                 f"Using SUPERNOTE_GEMINI_EMBEDDING_MODEL: {config.gemini_embedding_model}"
             )
+
+        if gemini_chat_model := os.getenv("SUPERNOTE_GEMINI_CHAT_MODEL"):
+            config.gemini_chat_model = gemini_chat_model
+            logger.info(f"Using SUPERNOTE_GEMINI_CHAT_MODEL: {config.gemini_chat_model}")
 
         if gemini_max_concurrency := os.getenv("SUPERNOTE_GEMINI_MAX_CONCURRENCY"):
             try:
