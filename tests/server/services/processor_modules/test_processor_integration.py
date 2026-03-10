@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from unittest.mock import MagicMock
 
@@ -110,7 +111,9 @@ async def test_full_processing_pipeline_with_real_file(
     # Mock AI service responses
     mock_gemini_service.ocr_image.return_value = "Handwritten text content"
     mock_gemini_service.embed_text.return_value = [0.1, 0.2, 0.3]
-    mock_gemini_service.generate_json.return_value = "{}"
+    mock_gemini_service.generate_json.return_value = json.dumps(
+        {"segments": [{"date_range": "2024-01-01", "summary": "Mock summary", "extracted_dates": [], "page_refs": []}]}
+    )
 
     # Execute Pipeline
     await processor_service.process_file(file_id)
@@ -196,7 +199,8 @@ async def test_full_processing_pipeline_with_real_file(
         assert transcript.data_source == "OCR"
 
         # Check AI summary content
-        assert ai_summary.content == "Handwritten text content"  # Mocked response
+        assert ai_summary.content is not None
+        assert "Mock summary" in ai_summary.content
         assert ai_summary.data_source == mock_gemini_service.provider_name
 
     print(f"Integration test passed with {total_pages} pages processed.")

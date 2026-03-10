@@ -3,7 +3,7 @@ import base64
 import json
 from typing import Any
 
-from mistralai import Mistral
+from mistralai.client import Mistral
 
 from supernote.server.services.ai_service import AIService
 
