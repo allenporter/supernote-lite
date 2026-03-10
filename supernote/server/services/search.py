@@ -124,10 +124,13 @@ class SearchService:
 
             try:
                 candidate_embedding = np.array(embedding_list)
+                candidate_norm = np.linalg.norm(candidate_embedding)
+                if candidate_norm == 0:
+                    continue
 
                 # Cosine Similarity
                 score = np.dot(query_embedding, candidate_embedding) / (
-                    query_norm * np.linalg.norm(candidate_embedding)
+                    query_norm * candidate_norm
                 )
 
                 # Date Inference (Phase 2)
