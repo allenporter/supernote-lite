@@ -131,7 +131,7 @@ async def test_concurrency_limit() -> None:
     with patch("supernote.server.services.mistral.Mistral"):
         service = MistralService(
             api_key="fake-key",
-            ocr_model="mistral-embed",
+            ocr_model="mistral-ocr-latest",
             embedding_model="mistral-embed",
             chat_model="mistral-large-latest",
             max_concurrency=max_concurrency,
