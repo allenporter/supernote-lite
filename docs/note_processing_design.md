@@ -102,7 +102,7 @@ To maintain a resilient pipeline, modules must follow specific error handling pa
 
 ### 1. Expectations for `process()`
 - **No Internal Try/Except (Mostly)**: Modules should let exceptions bubble up. The base class's `run()` method is the centralized error handler.
-- **Descriptive Exceptions**: Raise specific exceptions (e.g., `FileNotFoundError`, `GeminiAPIError`) so the automated logs are useful.
+- **Descriptive Exceptions**: Raise specific exceptions (e.g., `FileNotFoundError`, `ValueError`) so the automated logs are useful.
 - **Idempotency is Mandatory**: If `process()` fails halfway (e.g., after writing a file but before updating a DB record), the next attempt must be able to resume or overwrite without creating duplicates or corruption.
 
 ### 2. Orchestrator Reaction
