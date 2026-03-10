@@ -59,7 +59,12 @@ class MistralService(AIService):
                     "image_url": f"data:image/png;base64,{b64_image}",
                 },
             )
-        return "\n\n".join(page.markdown for page in response.pages)
+        pages = getattr(response, "pages", None)
+        if not pages:
+            return ""
+        return "\n\n".join(
+            page.markdown for page in pages if getattr(page, "markdown", None)
+        )
 
     async def embed_text(self, text: str) -> list[float]:
         if self._client is None:
@@ -78,7 +83,7 @@ class MistralService(AIService):
         if self._client is None:
             raise ValueError("Mistral API key not configured")
 
-        schema_str = json.dumps(schema, indent=2)
+        schema_str = json.dumps(schema, separators=(",", ":"))
         full_prompt = f"{prompt}\n\nRespond with valid JSON matching this schema:\n{schema_str}"
         async with self._get_semaphore():
             response = await self._client.chat.complete_async(

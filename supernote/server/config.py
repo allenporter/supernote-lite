@@ -343,7 +343,9 @@ class ServerConfig(DataClassYAMLMixin):
                     f"Using SUPERNOTE_GEMINI_MAX_CONCURRENCY: {config.gemini_max_concurrency}"
                 )
             except ValueError:
-                pass
+                logger.warning(
+                    f"Ignoring invalid SUPERNOTE_GEMINI_MAX_CONCURRENCY={gemini_max_concurrency!r}; must be an integer"
+                )
 
         if mistral_api_key := os.getenv("SUPERNOTE_MISTRAL_API_KEY"):
             config.mistral_api_key = mistral_api_key
@@ -378,7 +380,9 @@ class ServerConfig(DataClassYAMLMixin):
                     f"Using SUPERNOTE_MISTRAL_MAX_CONCURRENCY: {config.mistral_max_concurrency}"
                 )
             except ValueError:
-                pass
+                logger.warning(
+                    f"Ignoring invalid SUPERNOTE_MISTRAL_MAX_CONCURRENCY={mistral_max_concurrency!r}; must be an integer"
+                )
 
         if config.trace_log_file is None:
             config.trace_log_file = str(
