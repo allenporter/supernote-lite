@@ -52,7 +52,6 @@ async def test_full_processing_pipeline_with_real_file(
     session_manager: DatabaseSessionManager,
     blob_storage: BlobStorage,
     test_note_path: Path,
-    server_config_gemini: MagicMock,
     mock_gemini_service: MagicMock,
     authenticated_client: Client,
     user_service: UserService,
@@ -96,7 +95,6 @@ async def test_full_processing_pipeline_with_real_file(
     )
     summary = SummaryModule(
         file_service=processor_service.file_service,
-        config=server_config_gemini,
         ai_service=mock_gemini_service,
         summary_service=processor_service.summary_service,
     )

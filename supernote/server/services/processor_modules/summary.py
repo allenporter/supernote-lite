@@ -13,7 +13,6 @@ from supernote.models.summary import (
     AddSummaryDTO,
     UpdateSummaryDTO,
 )
-from supernote.server.config import ServerConfig
 from supernote.server.db.models.file import UserFileDO
 from supernote.server.db.models.note_processing import NotePageContentDO
 from supernote.server.db.models.user import UserDO
@@ -69,12 +68,10 @@ class SummaryModule(ProcessorModule):
     def __init__(
         self,
         file_service: FileService,
-        config: ServerConfig,
         ai_service: AIService,
         summary_service: SummaryService,
     ) -> None:
         self.file_service = file_service
-        self.config = config
         self.ai_service = ai_service
         self.summary_service = summary_service
 

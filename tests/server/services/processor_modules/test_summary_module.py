@@ -9,7 +9,6 @@ from supernote.models.summary import (
     AddSummaryDTO,
     SummaryItem,
 )
-from supernote.server.config import ServerConfig
 from supernote.server.db.models.file import UserFileDO
 from supernote.server.db.models.note_processing import NotePageContentDO, SystemTaskDO
 from supernote.server.db.models.user import UserDO
@@ -33,13 +32,11 @@ def mock_summary_service() -> MagicMock:
 @pytest.fixture
 def summary_module(
     file_service: FileService,
-    server_config_gemini: ServerConfig,
     mock_gemini_service: MagicMock,
     mock_summary_service: MagicMock,
 ) -> SummaryModule:
     return SummaryModule(
         file_service=file_service,
-        config=server_config_gemini,
         ai_service=mock_gemini_service,
         summary_service=mock_summary_service,
     )

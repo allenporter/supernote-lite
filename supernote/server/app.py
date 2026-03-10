@@ -341,7 +341,6 @@ def create_app(config: ServerConfig) -> web.Application:
         ),
         summary=SummaryModule(
             file_service=file_service,
-            config=config,
             ai_service=ai_service,
             summary_service=summary_service,
         ),
