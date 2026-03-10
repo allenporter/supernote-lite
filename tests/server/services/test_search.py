@@ -223,7 +223,9 @@ async def test_search_skips_zero_norm_candidate(
 
     async with session_manager.session() as session:
         session.add(
-            UserFileDO(id=file_id, user_id=user_id, file_name="Notes.note", directory_id=0)
+            UserFileDO(
+                id=file_id, user_id=user_id, file_name="Notes.note", directory_id=0
+            )
         )
         # Good page
         session.add(

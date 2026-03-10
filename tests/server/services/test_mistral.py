@@ -48,7 +48,7 @@ async def test_ocr_image(service: MistralService) -> None:
     mock_page.markdown = "Extracted text"
     mock_response = MagicMock()
     mock_response.pages = [mock_page]
-    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.ocr_image(b"png-bytes", prompt="ignored")
 
@@ -63,7 +63,7 @@ async def test_ocr_image_multiple_pages(service: MistralService) -> None:
     pages = [MagicMock(markdown=f"Page {i}") for i in range(3)]
     mock_response = MagicMock()
     mock_response.pages = pages
-    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.ocr_image(b"png-bytes", prompt="")
 
@@ -71,7 +71,9 @@ async def test_ocr_image_multiple_pages(service: MistralService) -> None:
 
 
 async def test_ocr_image_not_configured() -> None:
-    svc = MistralService(api_key=None, ocr_model="m", embedding_model="m", chat_model="m")
+    svc = MistralService(
+        api_key=None, ocr_model="m", embedding_model="m", chat_model="m"
+    )
     with pytest.raises(ValueError, match="not configured"):
         await svc.ocr_image(b"data", prompt="")
 
@@ -81,7 +83,7 @@ async def test_embed_text(service: MistralService) -> None:
     mock_embedding.embedding = [0.1, 0.2, 0.3]
     mock_response = MagicMock()
     mock_response.data = [mock_embedding]
-    service._client.embeddings.create_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.embeddings.create_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.embed_text("hello")
 
@@ -95,14 +97,16 @@ async def test_embed_text(service: MistralService) -> None:
 async def test_embed_text_empty_response(service: MistralService) -> None:
     mock_response = MagicMock()
     mock_response.data = []
-    service._client.embeddings.create_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.embeddings.create_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     with pytest.raises(ValueError, match="No embeddings"):
         await service.embed_text("hello")
 
 
 async def test_embed_text_not_configured() -> None:
-    svc = MistralService(api_key=None, ocr_model="m", embedding_model="m", chat_model="m")
+    svc = MistralService(
+        api_key=None, ocr_model="m", embedding_model="m", chat_model="m"
+    )
     with pytest.raises(ValueError, match="not configured"):
         await svc.embed_text("hello")
 
@@ -112,7 +116,7 @@ async def test_generate_json(service: MistralService) -> None:
     mock_choice.message.content = '{"result": "ok"}'
     mock_response = MagicMock()
     mock_response.choices = [mock_choice]
-    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.generate_json("Summarise this", schema={"type": "object"})
 
@@ -120,7 +124,9 @@ async def test_generate_json(service: MistralService) -> None:
 
 
 async def test_generate_json_not_configured() -> None:
-    svc = MistralService(api_key=None, ocr_model="m", embedding_model="m", chat_model="m")
+    svc = MistralService(
+        api_key=None, ocr_model="m", embedding_model="m", chat_model="m"
+    )
     with pytest.raises(ValueError, match="not configured"):
         await svc.generate_json("prompt", schema={})
 
@@ -128,7 +134,7 @@ async def test_generate_json_not_configured() -> None:
 async def test_ocr_image_empty_pages(service: MistralService) -> None:
     mock_response = MagicMock()
     mock_response.pages = []
-    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.ocr_image(b"png-bytes", prompt="")
 
@@ -137,7 +143,7 @@ async def test_ocr_image_empty_pages(service: MistralService) -> None:
 
 async def test_ocr_image_missing_pages(service: MistralService) -> None:
     mock_response = MagicMock(spec=[])  # no 'pages' attribute
-    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.ocr_image(b"png-bytes", prompt="")
 
@@ -150,7 +156,7 @@ async def test_ocr_image_skips_pages_without_markdown(service: MistralService) -
     page_no_markdown = MagicMock(spec=[])  # no 'markdown' attribute
     mock_response = MagicMock()
     mock_response.pages = [page_with_text, page_no_markdown]
-    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.ocr_image(b"png-bytes", prompt="")
 
@@ -164,7 +170,7 @@ async def test_generate_json_non_string_content(service: MistralService) -> None
     mock_choice.message.content = {"result": "ok"}  # dict, not str
     mock_response = MagicMock()
     mock_response.choices = [mock_choice]
-    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.generate_json("prompt", schema={})
 
@@ -175,7 +181,7 @@ async def test_generate_json_non_string_content(service: MistralService) -> None
 async def test_generate_json_empty_choices(service: MistralService) -> None:
     mock_response = MagicMock()
     mock_response.choices = []
-    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr, method-assign]
 
     result = await service.generate_json("prompt", schema={})
 
@@ -185,7 +191,11 @@ async def test_generate_json_empty_choices(service: MistralService) -> None:
 def test_max_concurrency_clamped_to_one() -> None:
     with patch("supernote.server.services.mistral.Mistral"):
         svc = MistralService(
-            api_key="key", ocr_model="m", embedding_model="m", chat_model="m", max_concurrency=0
+            api_key="key",
+            ocr_model="m",
+            embedding_model="m",
+            chat_model="m",
+            max_concurrency=0,
         )
     assert svc.max_concurrency == 1
 
@@ -219,7 +229,7 @@ async def test_concurrency_limit() -> None:
         finally:
             active_calls -= 1
 
-    service._client.embeddings.create_async = AsyncMock(side_effect=slow_embed)  # type: ignore[union-attr]
+    service._client.embeddings.create_async = AsyncMock(side_effect=slow_embed)  # type: ignore[union-attr, method-assign]
 
     tasks = [service.embed_text("text") for _ in range(5)]
     await asyncio.gather(*tasks)

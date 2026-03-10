@@ -9,7 +9,10 @@ from supernote.server.db.session import DatabaseSessionManager
 from supernote.server.services.ai_service import AIService
 from supernote.server.services.file import FileService
 from supernote.server.services.processor_modules import ProcessorModule
-from supernote.server.utils.note_content import format_page_metadata, get_page_content_by_id
+from supernote.server.utils.note_content import (
+    format_page_metadata,
+    get_page_content_by_id,
+)
 from supernote.server.utils.paths import get_page_png_path
 from supernote.server.utils.prompt_loader import PROMPT_LOADER, PromptId
 

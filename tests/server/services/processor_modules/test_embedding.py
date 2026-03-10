@@ -167,8 +167,6 @@ async def test_embedding_run_if_needed_disabled(
     )
 
     assert (
-        await embedding_module.run(
-            1, session_manager, page_index=0, page_id="p0"
-        )
+        await embedding_module.run(1, session_manager, page_index=0, page_id="p0")
         is True
     )

@@ -120,14 +120,10 @@ async def test_ocr_run_if_needed_disabled(
     mock_ai_service.is_configured = False
 
     assert (
-        await ocr_module.run_if_needed(
-            1, session_manager, page_index=0, page_id="p0"
-        )
+        await ocr_module.run_if_needed(1, session_manager, page_index=0, page_id="p0")
         is False
     )
-    assert (
-        await ocr_module.run(1, session_manager, page_index=0, page_id="p0") is True
-    )
+    assert await ocr_module.run(1, session_manager, page_index=0, page_id="p0") is True
 
 
 async def test_ocr_with_inferred_date(

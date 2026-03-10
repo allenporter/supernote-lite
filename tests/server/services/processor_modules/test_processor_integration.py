@@ -112,7 +112,16 @@ async def test_full_processing_pipeline_with_real_file(
     mock_gemini_service.ocr_image.return_value = "Handwritten text content"
     mock_gemini_service.embed_text.return_value = [0.1, 0.2, 0.3]
     mock_gemini_service.generate_json.return_value = json.dumps(
-        {"segments": [{"date_range": "2024-01-01", "summary": "Mock summary", "extracted_dates": [], "page_refs": []}]}
+        {
+            "segments": [
+                {
+                    "date_range": "2024-01-01",
+                    "summary": "Mock summary",
+                    "extracted_dates": [],
+                    "page_refs": [],
+                }
+            ]
+        }
     )
 
     # Execute Pipeline

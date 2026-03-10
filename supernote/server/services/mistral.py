@@ -1,9 +1,15 @@
 import asyncio
 import base64
 import json
-from typing import Any
+from typing import Any, cast
 
 from mistralai.client import Mistral
+from mistralai.client.models import (
+    AssistantMessage,
+    SystemMessage,
+    ToolMessage,
+    UserMessage,
+)
 
 from supernote.server.services.ai_service import AIService
 
@@ -77,19 +83,31 @@ class MistralService(AIService):
             )
         if not response.data:
             raise ValueError("No embeddings returned from Mistral API")
-        return list(response.data[0].embedding)
+        embedding = response.data[0].embedding
+        if embedding is None:
+            raise ValueError("No embedding values returned from Mistral API")
+        return list(embedding)
 
     async def generate_json(self, prompt: str, schema: dict[str, Any]) -> str:
         if self._client is None:
             raise ValueError("Mistral API key not configured")
 
         schema_str = json.dumps(schema, separators=(",", ":"))
-        full_prompt = f"{prompt}\n\nRespond with valid JSON matching this schema:\n{schema_str}"
+        full_prompt = (
+            f"{prompt}\n\nRespond with valid JSON matching this schema:\n{schema_str}"
+        )
         async with self._get_semaphore():
             response = await self._client.chat.complete_async(
                 model=self._chat_model,
-                messages=[{"role": "user", "content": full_prompt}],
-                response_format={"type": "json_object"},  # type: ignore[arg-type]
+                messages=cast(
+                    list[AssistantMessage | SystemMessage | ToolMessage | UserMessage],
+                    [UserMessage(content=full_prompt)],
+                ),
+                response_format={"type": "json_object"},
             )
         content = response.choices[0].message.content if response.choices else ""
-        return content if isinstance(content, str) else json.dumps(content, separators=(",", ":"))
+        return (
+            content
+            if isinstance(content, str)
+            else json.dumps(content, separators=(",", ":"))
+        )

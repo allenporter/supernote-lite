@@ -112,6 +112,6 @@ class GeminiService(AIService):
             config={
                 "response_mime_type": "application/json",
                 "response_json_schema": schema,
-            },  # type: ignore[arg-type]
+            },
         )
         return response.text or ""

@@ -328,7 +328,9 @@ class ServerConfig(DataClassYAMLMixin):
 
         if gemini_chat_model := os.getenv("SUPERNOTE_GEMINI_CHAT_MODEL"):
             config.gemini_chat_model = gemini_chat_model
-            logger.info(f"Using SUPERNOTE_GEMINI_CHAT_MODEL: {config.gemini_chat_model}")
+            logger.info(
+                f"Using SUPERNOTE_GEMINI_CHAT_MODEL: {config.gemini_chat_model}"
+            )
 
         if gemini_max_concurrency := os.getenv("SUPERNOTE_GEMINI_MAX_CONCURRENCY"):
             try:
@@ -355,7 +357,9 @@ class ServerConfig(DataClassYAMLMixin):
 
         if mistral_ocr_model := os.getenv("SUPERNOTE_MISTRAL_OCR_MODEL"):
             config.mistral_ocr_model = mistral_ocr_model
-            logger.info(f"Using SUPERNOTE_MISTRAL_OCR_MODEL: {config.mistral_ocr_model}")
+            logger.info(
+                f"Using SUPERNOTE_MISTRAL_OCR_MODEL: {config.mistral_ocr_model}"
+            )
 
         if mistral_embedding_model := os.getenv("SUPERNOTE_MISTRAL_EMBEDDING_MODEL"):
             config.mistral_embedding_model = mistral_embedding_model
@@ -365,7 +369,9 @@ class ServerConfig(DataClassYAMLMixin):
 
         if mistral_chat_model := os.getenv("SUPERNOTE_MISTRAL_CHAT_MODEL"):
             config.mistral_chat_model = mistral_chat_model
-            logger.info(f"Using SUPERNOTE_MISTRAL_CHAT_MODEL: {config.mistral_chat_model}")
+            logger.info(
+                f"Using SUPERNOTE_MISTRAL_CHAT_MODEL: {config.mistral_chat_model}"
+            )
 
         if mistral_max_concurrency := os.getenv("SUPERNOTE_MISTRAL_MAX_CONCURRENCY"):
             try:
