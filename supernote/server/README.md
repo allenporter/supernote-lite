@@ -46,7 +46,7 @@ Additional Gemini model settings:
 | `SUPERNOTE_GEMINI_OCR_MODEL` | `gemini-3-flash-preview` | Vision model for OCR |
 | `SUPERNOTE_GEMINI_EMBEDDING_MODEL` | `gemini-embedding-001` | Embedding model |
 | `SUPERNOTE_GEMINI_CHAT_MODEL` | `gemini-2.0-flash` | Chat model for summaries |
-| `SUPERNOTE_GEMINI_MAX_CONCURRENCY` | `5` | Max concurrent API calls |
+| `SUPERNOTE_GEMINI_MAX_CONCURRENCY` | `5` | Max concurrent API calls (minimum 1) |
 
 Additional Mistral model settings:
 
@@ -55,7 +55,7 @@ Additional Mistral model settings:
 | `SUPERNOTE_MISTRAL_OCR_MODEL` | `mistral-ocr-latest` | Dedicated OCR model |
 | `SUPERNOTE_MISTRAL_EMBEDDING_MODEL` | `mistral-embed` | Embedding model |
 | `SUPERNOTE_MISTRAL_CHAT_MODEL` | `mistral-large-latest` | Chat model for summaries |
-| `SUPERNOTE_MISTRAL_MAX_CONCURRENCY` | `5` | Max concurrent API calls |
+| `SUPERNOTE_MISTRAL_MAX_CONCURRENCY` | `5` | Max concurrent API calls (minimum 1) |
 
 ### Running the Server
 

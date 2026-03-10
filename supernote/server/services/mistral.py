@@ -22,7 +22,7 @@ class MistralService(AIService):
         self._ocr_model = ocr_model
         self._embedding_model = embedding_model
         self._chat_model = chat_model
-        self.max_concurrency = max_concurrency
+        self.max_concurrency = max(1, max_concurrency)
         self._client: Mistral | None = None
         self._semaphore: asyncio.Semaphore | None = None
         if api_key:
