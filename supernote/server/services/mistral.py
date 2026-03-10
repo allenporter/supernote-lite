@@ -92,4 +92,4 @@ class MistralService(AIService):
                 response_format={"type": "json_object"},  # type: ignore[arg-type]
             )
         content = response.choices[0].message.content if response.choices else ""
-        return content if isinstance(content, str) else str(content)
+        return content if isinstance(content, str) else json.dumps(content, separators=(",", ":"))
