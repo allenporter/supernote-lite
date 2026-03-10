@@ -145,8 +145,8 @@ BaseConfig
     Env Var: `SUPERNOTE_MISTRAL_API_KEY`
     """
 
-    mistral_ocr_model: str = "pixtral-12b-2409"
-    """Mistral model to use for OCR (must support vision).
+    mistral_ocr_model: str = "mistral-ocr-latest"
+    """Mistral model to use for OCR.
 
     Env Var: `SUPERNOTE_MISTRAL_OCR_MODEL`
     """

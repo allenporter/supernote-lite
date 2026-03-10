@@ -80,6 +80,10 @@ class EmbeddingModule(ProcessorModule):
             raise ValueError("AI service not configured")
 
         embedding_values = await self.ai_service.embed_text(text_content)
+        if not embedding_values:
+            raise ValueError(
+                f"AI service returned empty embedding for file {file_id} page {page_id}"
+            )
         embedding_json = json.dumps(embedding_values)
 
         async with session_manager.session() as session:

@@ -51,25 +51,14 @@ class MistralService(AIService):
 
         b64_image = base64.b64encode(png_data).decode()
         async with self._get_semaphore():
-            response = await self._client.chat.complete_async(
+            response = await self._client.ocr.process_async(
                 model=self._ocr_model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": [
-                            {"type": "text", "text": prompt},
-                            {
-                                "type": "image_url",
-                                "image_url": {
-                                    "url": f"data:image/png;base64,{b64_image}"
-                                },
-                            },
-                        ],
-                    }
-                ],
+                document={
+                    "type": "image_url",
+                    "image_url": f"data:image/png;base64,{b64_image}",
+                },
             )
-        content = response.choices[0].message.content if response.choices else ""
-        return content if isinstance(content, str) else ""
+        return "\n\n".join(page.markdown for page in response.pages)
 
     async def embed_text(self, text: str) -> list[float]:
         if self._client is None:

@@ -106,9 +106,10 @@ class OcrModule(ProcessorModule):
             return
 
         png_path = get_page_png_path(file_id, page_id)
-        png_data = b""
+        chunks = []
         async for chunk in self.file_service.blob_storage.get(CACHE_BUCKET, png_path):
-            png_data += chunk
+            chunks.append(chunk)
+        png_data = b"".join(chunks)
 
         if not self.ai_service.is_configured:
             raise ValueError("AI service not configured")

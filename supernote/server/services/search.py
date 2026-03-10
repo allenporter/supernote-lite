@@ -86,6 +86,9 @@ class SearchService:
             return []
 
         query_norm = np.linalg.norm(query_embedding)
+        if query_norm == 0:
+            logger.error("Query embedding has zero norm, cannot compute similarity")
+            return []
 
         # 2. Fetch Candidates
         async with self.session_manager.session() as session:
