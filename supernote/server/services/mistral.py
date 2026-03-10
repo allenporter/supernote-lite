@@ -1,14 +1,11 @@
 import asyncio
 import base64
 import json
-import logging
 from typing import Any
 
 from mistralai import Mistral
 
 from supernote.server.services.ai_service import AIService
-
-logger = logging.getLogger(__name__)
 
 
 class MistralService(AIService):

@@ -124,7 +124,7 @@ async def test_summary_success(
         # Verify AI called with populated prompt
         call_args = mock_gemini_service.generate_json.call_args
         assert call_args is not None
-        called_prompt = call_args.args[0]
+        called_prompt = call_args.kwargs["prompt"]
         assert "Page 1 text" in called_prompt
         assert "Page 2 text" in called_prompt
         assert "Generate" in called_prompt
