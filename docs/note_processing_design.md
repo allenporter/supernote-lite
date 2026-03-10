@@ -41,11 +41,11 @@ If we don't want to parse the large "Transcript Summary" every time we need a si
 1.  **Diff Phase**: Parser extracts page streams. Each stream is hashed and compared to the database.
 2.  **Visual Phase**: Generate PNGs for new/changed pages. Assemble full PDF using cached PNGs for unchanged pages.
 3.  **Intelligence Phase**:
-    - Send PNG to Gemini (with retry/backoff) for OCR.
+    - Send PNG to the configured AI provider (with retry/backoff) for OCR.
     - **Chunk Embeddings (Page-indexed)**: Generated per-page from raw OCR text. Ideal for "finding the needle in the haystack."
 4.  **Document Phase**:
     - **Transcript Generation**: Aggregate all page text into a single "OCR Transcript" `SummaryDO`.
-    - **Insight Generation**: Prompt Gemini with the transcript to create an "AI Insights" `SummaryDO`.
+    - **Insight Generation**: Prompt the AI provider with the transcript to create an "AI Insights" `SummaryDO`.
     - **Vector Indexing**:
         - **Chunks**: Generate vectors for each page window. Store in-memory index `(file_id, page_index)`.
         - **Document**: Generate vector for the Insight Summary. Store in-memory index `(file_id)`.
@@ -118,5 +118,5 @@ To maintain a resilient pipeline, modules must follow specific error handling pa
 ### Failure Modes & Corner Cases
 
 1.  **Dependency Staleness**: If `PageHashingModule` detects a change, it deletes the `SystemTaskDO` entries for `OCR` and `Embedding`. This causes their `run_if_needed` to return `True` on the next run, forcing a re-poll.
-2.  **Concurrency Limits**: `ProcessorService` limits the number of files processed in parallel. Modules should use internal semaphores (like `GeminiService`) if they have external API rate limits.
+2.  **Concurrency Limits**: `ProcessorService` limits the number of files processed in parallel. AI service implementations (like `GeminiService` and `MistralService`) use internal semaphores to respect external API rate limits.
 3.  **Idempotency Requirement**: If a task fails *after* writing data but *before* updating its status to `COMPLETED`, it will be re-run. `process()` must be safe to call again (e.g., using `UPSERT` or overwriting files).
