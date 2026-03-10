@@ -137,6 +137,38 @@ BaseConfig
     Env Var: `SUPERNOTE_GEMINI_MAX_CONCURRENCY`
     """
 
+    mistral_api_key: str | None = None
+    """Mistral AI API Key for OCR and Embeddings.
+
+    When set, Mistral will be used as the AI backend instead of Gemini.
+
+    Env Var: `SUPERNOTE_MISTRAL_API_KEY`
+    """
+
+    mistral_ocr_model: str = "pixtral-12b-2409"
+    """Mistral model to use for OCR (must support vision).
+
+    Env Var: `SUPERNOTE_MISTRAL_OCR_MODEL`
+    """
+
+    mistral_embedding_model: str = "mistral-embed"
+    """Mistral model to use for Embeddings.
+
+    Env Var: `SUPERNOTE_MISTRAL_EMBEDDING_MODEL`
+    """
+
+    mistral_chat_model: str = "mistral-large-latest"
+    """Mistral model to use for text generation (summaries).
+
+    Env Var: `SUPERNOTE_MISTRAL_CHAT_MODEL`
+    """
+
+    mistral_max_concurrency: int = 5
+    """Maximum number of concurrent Mistral API calls.
+
+    Env Var: `SUPERNOTE_MISTRAL_MAX_CONCURRENCY`
+    """
+
     @property
     def base_url(self) -> str:
         """Get the base URL for the main server.
@@ -293,6 +325,35 @@ BaseConfig
                 config.gemini_max_concurrency = int(gemini_max_concurrency)
                 logger.info(
                     f"Using SUPERNOTE_GEMINI_MAX_CONCURRENCY: {config.gemini_max_concurrency}"
+                )
+            except ValueError:
+                pass
+
+        if mistral_api_key := os.getenv("SUPERNOTE_MISTRAL_API_KEY"):
+            config.mistral_api_key = mistral_api_key
+            logger.info(
+                f"Using SUPERNOTE_MISTRAL_API_KEY: xxx...{config.mistral_api_key[-3:]}"
+            )
+
+        if mistral_ocr_model := os.getenv("SUPERNOTE_MISTRAL_OCR_MODEL"):
+            config.mistral_ocr_model = mistral_ocr_model
+            logger.info(f"Using SUPERNOTE_MISTRAL_OCR_MODEL: {config.mistral_ocr_model}")
+
+        if mistral_embedding_model := os.getenv("SUPERNOTE_MISTRAL_EMBEDDING_MODEL"):
+            config.mistral_embedding_model = mistral_embedding_model
+            logger.info(
+                f"Using SUPERNOTE_MISTRAL_EMBEDDING_MODEL: {config.mistral_embedding_model}"
+            )
+
+        if mistral_chat_model := os.getenv("SUPERNOTE_MISTRAL_CHAT_MODEL"):
+            config.mistral_chat_model = mistral_chat_model
+            logger.info(f"Using SUPERNOTE_MISTRAL_CHAT_MODEL: {config.mistral_chat_model}")
+
+        if mistral_max_concurrency := os.getenv("SUPERNOTE_MISTRAL_MAX_CONCURRENCY"):
+            try:
+                config.mistral_max_concurrency = int(mistral_max_concurrency)
+                logger.info(
+                    f"Using SUPERNOTE_MISTRAL_MAX_CONCURRENCY: {config.mistral_max_concurrency}"
                 )
             except ValueError:
                 pass

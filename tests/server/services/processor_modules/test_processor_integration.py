@@ -13,10 +13,8 @@ from supernote.server.db.session import DatabaseSessionManager
 from supernote.server.services.blob import BlobStorage
 from supernote.server.services.file import FileService
 from supernote.server.services.processor import ProcessorService
-from supernote.server.services.processor_modules.gemini_embedding import (
-    GeminiEmbeddingModule,
-)
-from supernote.server.services.processor_modules.gemini_ocr import GeminiOcrModule
+from supernote.server.services.processor_modules.embedding import EmbeddingModule
+from supernote.server.services.processor_modules.ocr import OcrModule
 from supernote.server.services.processor_modules.page_hashing import PageHashingModule
 from supernote.server.services.processor_modules.png_conversion import (
     PngConversionModule,
@@ -87,17 +85,19 @@ async def test_full_processing_pipeline_with_real_file(
     # Register real modules (mostly)
     hashing = PageHashingModule(processor_service.file_service)
     png = PngConversionModule(processor_service.file_service)
-    # Mock Gemini modules because they need API keys
-    ocr = GeminiOcrModule(
-        processor_service.file_service, server_config_gemini, mock_gemini_service
+    # Mock AI modules because they need API keys
+    ocr = OcrModule(
+        file_service=processor_service.file_service,
+        ai_service=mock_gemini_service,
     )
-    embedding = GeminiEmbeddingModule(
-        processor_service.file_service, server_config_gemini, mock_gemini_service
+    embedding = EmbeddingModule(
+        file_service=processor_service.file_service,
+        ai_service=mock_gemini_service,
     )
     summary = SummaryModule(
         file_service=processor_service.file_service,
         config=server_config_gemini,
-        gemini_service=mock_gemini_service,
+        ai_service=mock_gemini_service,
         summary_service=processor_service.summary_service,
     )
 
@@ -109,14 +109,10 @@ async def test_full_processing_pipeline_with_real_file(
         summary=summary,
     )
 
-    # Mock Gemini responses
-    mock_response = MagicMock()
-    mock_response.text = "Handwritten text content"
-    mock_gemini_service.generate_content.return_value = mock_response
-
-    mock_embed = MagicMock()
-    mock_embed.values = [0.1, 0.2, 0.3]
-    mock_gemini_service.embed_content.return_value = MagicMock(embeddings=[mock_embed])
+    # Mock AI service responses
+    mock_gemini_service.ocr_image.return_value = "Handwritten text content"
+    mock_gemini_service.embed_text.return_value = [0.1, 0.2, 0.3]
+    mock_gemini_service.generate_json.return_value = "{}"
 
     # Execute Pipeline
     await processor_service.process_file(file_id)
@@ -203,6 +199,6 @@ async def test_full_processing_pipeline_with_real_file(
 
         # Check AI summary content
         assert ai_summary.content == "Handwritten text content"  # Mocked response
-        assert ai_summary.data_source == "GEMINI"
+        assert ai_summary.data_source == mock_gemini_service.provider_name
 
     print(f"Integration test passed with {total_pages} pages processed.")
