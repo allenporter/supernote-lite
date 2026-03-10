@@ -212,6 +212,52 @@ async def test_get_transcript(
     assert "Page ID: P20231028120000def" in range_trans
 
 
+async def test_search_skips_zero_norm_candidate(
+    search_service: SearchService,
+    session_manager: DatabaseSessionManager,
+    mock_ai_service: MagicMock,
+) -> None:
+    """Candidates with all-zero embeddings should be skipped (not cause NaN scores)."""
+    user_id = 1
+    file_id = 101
+
+    async with session_manager.session() as session:
+        session.add(
+            UserFileDO(id=file_id, user_id=user_id, file_name="Notes.note", directory_id=0)
+        )
+        # Good page
+        session.add(
+            NotePageContentDO(
+                file_id=file_id,
+                page_index=0,
+                page_id="p0",
+                text_content="Relevant content.",
+                embedding=json.dumps([1.0, 0.0]),
+            )
+        )
+        # Zero-norm page — should be skipped entirely
+        session.add(
+            NotePageContentDO(
+                file_id=file_id,
+                page_index=1,
+                page_id="p1",
+                text_content="Zero norm page.",
+                embedding=json.dumps([0.0, 0.0]),
+            )
+        )
+        await session.commit()
+
+    mock_ai_service.embed_text.return_value = [1.0, 0.0]
+
+    results = await search_service.search_chunks(user_id=user_id, query="anything")
+
+    # Only the good page should appear; zero-norm page is silently skipped
+    assert len(results) == 1
+    assert results[0].page_index == 0
+    # Score should be finite and valid
+    assert 0.0 <= results[0].score <= 1.0
+
+
 async def test_search_chunks_with_date_filter_inferred(
     search_service: SearchService,
     session_manager: DatabaseSessionManager,

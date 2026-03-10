@@ -125,6 +125,71 @@ async def test_generate_json_not_configured() -> None:
         await svc.generate_json("prompt", schema={})
 
 
+async def test_ocr_image_empty_pages(service: MistralService) -> None:
+    mock_response = MagicMock()
+    mock_response.pages = []
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+
+    result = await service.ocr_image(b"png-bytes", prompt="")
+
+    assert result == ""
+
+
+async def test_ocr_image_missing_pages(service: MistralService) -> None:
+    mock_response = MagicMock(spec=[])  # no 'pages' attribute
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+
+    result = await service.ocr_image(b"png-bytes", prompt="")
+
+    assert result == ""
+
+
+async def test_ocr_image_skips_pages_without_markdown(service: MistralService) -> None:
+    page_with_text = MagicMock()
+    page_with_text.markdown = "Real text"
+    page_no_markdown = MagicMock(spec=[])  # no 'markdown' attribute
+    mock_response = MagicMock()
+    mock_response.pages = [page_with_text, page_no_markdown]
+    service._client.ocr.process_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+
+    result = await service.ocr_image(b"png-bytes", prompt="")
+
+    assert result == "Real text"
+
+
+async def test_generate_json_non_string_content(service: MistralService) -> None:
+    import json
+
+    mock_choice = MagicMock()
+    mock_choice.message.content = {"result": "ok"}  # dict, not str
+    mock_response = MagicMock()
+    mock_response.choices = [mock_choice]
+    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+
+    result = await service.generate_json("prompt", schema={})
+
+    parsed = json.loads(result)
+    assert parsed == {"result": "ok"}
+
+
+async def test_generate_json_empty_choices(service: MistralService) -> None:
+    mock_response = MagicMock()
+    mock_response.choices = []
+    service._client.chat.complete_async = AsyncMock(return_value=mock_response)  # type: ignore[union-attr]
+
+    result = await service.generate_json("prompt", schema={})
+
+    assert result == ""
+
+
+def test_max_concurrency_clamped_to_one() -> None:
+    with patch("supernote.server.services.mistral.Mistral"):
+        svc = MistralService(
+            api_key="key", ocr_model="m", embedding_model="m", chat_model="m", max_concurrency=0
+        )
+    assert svc.max_concurrency == 1
+
+
 async def test_concurrency_limit() -> None:
     max_concurrency = 2
 

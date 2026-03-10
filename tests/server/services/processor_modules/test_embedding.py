@@ -97,6 +97,61 @@ async def test_process_embedding_success(
         assert task.status == "COMPLETED"
 
 
+async def test_embedding_fails_on_empty_vector(
+    embedding_module: EmbeddingModule,
+    session_manager: DatabaseSessionManager,
+    mock_ai_service: MagicMock,
+) -> None:
+    """EmbeddingModule marks the task FAILED when the AI service returns an empty vector."""
+    user_id = 101
+    file_id = 888
+
+    async with session_manager.session() as session:
+        from supernote.server.db.models.user import UserDO
+
+        session.add(UserDO(id=user_id, email="e@example.com", password_md5="hash"))
+        session.add(
+            UserFileDO(
+                id=file_id,
+                user_id=user_id,
+                storage_key="sk",
+                file_name="f.note",
+                directory_id=0,
+            )
+        )
+        session.add(
+            NotePageContentDO(
+                file_id=file_id,
+                page_index=0,
+                page_id="p0",
+                content_hash="h",
+                text_content="Some text",
+            )
+        )
+        await session.commit()
+
+    mock_ai_service.embed_text.return_value = []
+
+    # run() catches the ValueError and marks the task FAILED rather than re-raising
+    await embedding_module.run(file_id, session_manager, page_index=0, page_id="p0")
+
+    async with session_manager.session() as session:
+        task = (
+            (
+                await session.execute(
+                    select(SystemTaskDO)
+                    .where(SystemTaskDO.file_id == file_id)
+                    .where(SystemTaskDO.task_type == "EMBEDDING_GENERATION")
+                    .where(SystemTaskDO.key == "page_p0")
+                )
+            )
+            .scalars()
+            .first()
+        )
+        assert task is not None
+        assert task.status == "FAILED"
+
+
 async def test_embedding_run_if_needed_disabled(
     embedding_module: EmbeddingModule,
     session_manager: DatabaseSessionManager,
