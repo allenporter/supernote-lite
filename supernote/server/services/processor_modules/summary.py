@@ -198,7 +198,7 @@ class SummaryModule(ProcessorModule):
             )
         except Exception as e:
             logger.error(f"Failed to generate AI summary for file {file_id}: {e}")
-            return
+            raise
 
         # Parse JSON response
         ai_summary = "No summary generated."
