@@ -151,8 +151,6 @@ docker run -d -p 8000:8000 -v supernote-data:/data supernote
 
 For a full setup with Docker Compose, see [docker-compose.yml](docker-compose.yml).
 
-See [Server Documentation](supernote/server/README.md) for details.
-
 ### Developer API
 
 Integrate Supernote into your own Python applications:
