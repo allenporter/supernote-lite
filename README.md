@@ -139,8 +139,7 @@ docker run -d \
   -p 8001:8001 \
   -v supernote-data:/data \
   -e SUPERNOTE_GEMINI_API_KEY="your-api-key" \
-  -e SUPERNOTE_JWT_SECRET="your-secret" \
-  ghcr.io/ddulic/supernote:latest
+  ghcr.io/allenporter/supernote:latest
 ```
 
 Or build from source:

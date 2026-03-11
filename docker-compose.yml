@@ -1,7 +1,7 @@
 ---
 services:
   supernote:
-    image: ghcr.io/ddulic/supernote:latest
+    image: ghcr.io/allenporter/supernote:latest
     # Alternatively, build from source:
     # build: .
     restart: unless-stopped
@@ -14,9 +14,6 @@ services:
       # AI Provider — set one of the following:
       SUPERNOTE_GEMINI_API_KEY: ""      # Google Gemini API key
       # SUPERNOTE_MISTRAL_API_KEY: ""   # Mistral AI API key (alternative)
-
-      # Security — generate with: openssl rand -hex 32
-      SUPERNOTE_JWT_SECRET: ""
 
       # Storage & server
       SUPERNOTE_STORAGE_DIR: /data
